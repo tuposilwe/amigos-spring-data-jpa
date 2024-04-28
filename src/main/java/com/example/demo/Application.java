@@ -1,9 +1,11 @@
 package com.example.demo;
 
+import com.github.javafaker.Faker;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -16,46 +18,32 @@ public class Application {
     @Bean
     CommandLineRunner commandLineRunner(StudentRepository studentRepository){
         return args -> {
-             Student maria = new Student(
-                     "Maria",
-                     "Jones",
-                     "maria.jones@amigoscode.edu",
-                     21
-             );
-            Student ahmed = new Student(
-                    "Ahmed",
-                    "Ali",
-                    "ahmed.ali@amigoscode.edu",
-                    18
-            );
-            System.out.println("Adding maria and ahmed");
-             studentRepository.saveAll(List.of(ahmed,maria));
-
-            System.out.print("Number of students: ");
-            System.out.println(studentRepository.count());
+//           generateRandomStudents(studentRepository);
+            Sort sort = Sort.by("firstName").ascending().and(Sort.by("age").descending());
 
             studentRepository
-                    .findById(2L)
-                    .ifPresentOrElse(
-                            System.out::println,
-                            () -> System.out.println("Student with ID 2 not found"));
-            studentRepository
-                    .findById(3L)
-                    .ifPresentOrElse(
-                            System.out::println,
-                            () -> System.out.println("Student with ID 3 not found"));
-
-            System.out.println("Select all students");
-            List<Student> students = studentRepository.findAll();
-            students.forEach(System.out::println);
-
-            System.out.println("Delete maria");
-//            studentRepository.deleteById(1L);
-
-            System.out.print("Number of students: ");
-            System.out.println(studentRepository.count());
+                    .findAll(sort)
+                    .forEach(student -> System.out.println(student.getFirstName() + " " + student.getAge()));
+            ;
         };
     }
+    private void generateRandomStudents(StudentRepository studentRepository){
+        Faker faker = new Faker();
+        for (int i = 0; i <= 20; i++){
+            String firstName = faker.name().firstName();
+            String lastName = faker.name().lastName();
+            String email = String.format("%s.%s@amigoscode.edu",firstName,lastName);
+
+            Student student = new Student(
+                    firstName,
+                    lastName,
+                    email,
+                    faker.number().numberBetween(17, 90)
+            );
+            studentRepository.save(student);
+        }
+    }
+
 }
 
 
