@@ -22,31 +22,38 @@ public class Application {
                      "maria.jones@amigoscode.edu",
                      21
              );
-
-            Student maria2 = new Student(
-                    "Maria",
-                    "Jones",
-                    "maria2.jones@amigoscode.edu",
-                    25
-            );
-
             Student ahmed = new Student(
                     "Ahmed",
                     "Ali",
                     "ahmed.ali@amigoscode.edu",
                     18
             );
+            System.out.println("Adding maria and ahmed");
+             studentRepository.saveAll(List.of(ahmed,maria));
 
-//            studentRepository.saveAll(List.of(maria2));
+            System.out.print("Number of students: ");
+            System.out.println(studentRepository.count());
 
-             studentRepository
-                     .findStudentByEmail("ahmed.ali@amigoscode.edu")
-                     .ifPresentOrElse(System.out::println,
-                             () -> System.out.println("student with email ahmed.ali@amigoscode.edu not found"));
-             studentRepository.findStudentsByFirstNameEqualsAndAgeIsGreaterOrEqualNative(
-                     "Maria",
-                     18
-             ).forEach(System.out::println);
+            studentRepository
+                    .findById(2L)
+                    .ifPresentOrElse(
+                            System.out::println,
+                            () -> System.out.println("Student with ID 2 not found"));
+            studentRepository
+                    .findById(3L)
+                    .ifPresentOrElse(
+                            System.out::println,
+                            () -> System.out.println("Student with ID 3 not found"));
+
+            System.out.println("Select all students");
+            List<Student> students = studentRepository.findAll();
+            students.forEach(System.out::println);
+
+            System.out.println("Delete maria");
+//            studentRepository.deleteById(1L);
+
+            System.out.print("Number of students: ");
+            System.out.println(studentRepository.count());
         };
     }
 }
