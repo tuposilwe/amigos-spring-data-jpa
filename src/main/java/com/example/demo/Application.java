@@ -53,12 +53,27 @@ public class Application {
             );
 
             StudentIdCard studentIdCard = new StudentIdCard(
-                    "123456789",
+                    "123456782",
                     student);
 
             student.setStudentIdCard(studentIdCard);
 
-          //  studentRepository.save(student);
+
+            student.addEnrolment(new Enrolment(
+                    new EnrolmentId(1L,1L),
+                    student,
+                    new Course("Computer Science","IT"),
+                    LocalDateTime.now()
+            ));
+
+            student.addEnrolment(new Enrolment(
+                    new EnrolmentId(1L,2L),
+                    student,
+                    new Course("Machine Learning","IT"),
+                    LocalDateTime.now().minusDays(18)
+            ));
+
+            studentRepository.save(student);
 
 
             studentRepository.findById(64L)
